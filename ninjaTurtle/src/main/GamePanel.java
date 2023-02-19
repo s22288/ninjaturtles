@@ -2,6 +2,7 @@ package main;
 
 import entities.Player;
 import images.background.tile.TileManager;
+import mechanics.LevelHandle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,8 +26,12 @@ public class GamePanel extends JPanel implements Runnable {
     // dodawanie tła do gry
     TileManager tileManager  = new TileManager(this);
 
+    // dodawanie grawitacji
+    public  LevelHandle level = new LevelHandle();
+
     Player player = new Player(this,keyH);
     public GamePanel() {
+
         this.setPreferredSize(new Dimension(ScreenWith, ScreenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
@@ -50,11 +55,16 @@ public class GamePanel extends JPanel implements Runnable {
 
             // nie ruszać tych metod
             // update positions of object
+           ;
+           player.tick();
             update();
+
             // draw updated information on the screen
             repaint();
 
+
             try {
+
                 double remainTime = nextDrawTime - System.nanoTime();
                 remainTime = remainTime/1000000;
                 if(remainTime<0){
@@ -79,6 +89,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         tileManager.draw(g2);
        player.draw(g2);
+
         g2.dispose();
     }
 }

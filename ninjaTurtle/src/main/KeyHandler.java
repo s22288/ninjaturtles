@@ -46,7 +46,7 @@ public class KeyHandler implements KeyListener {
             downPressed = false;
         }
         if(code == KeyEvent.VK_SPACE){
-            spacePressed = true;
+            spacePressed = false;
         }
 
     }

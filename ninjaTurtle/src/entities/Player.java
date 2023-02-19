@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class Player extends Entity {
+public class Player extends Entity  {
     GamePanel gp;
     KeyHandler keyH;
 
@@ -18,12 +18,14 @@ public class Player extends Entity {
         this.keyH = keyH;
         setDefaultValues();
         getPlayerImgage();
+
     }
    public void setDefaultValues(){
         x =0;
-        y = 430;
+        y = 30;
         speed = 4;
         direction = "down";
+
    }
    public void getPlayerImgage(){
        try {
@@ -40,8 +42,21 @@ public class Player extends Entity {
            throw new RuntimeException(e);
        }
    }
+   // skakanie
+    public void tick(){
+        x += valx;
+        if (vely < gp.level.gravity){
+            vely+=0.1;
+        }
+        if(y+vely< 430){
+            y+=vely;
+        }else {
+            vely=0;
+        }
+    }
    public void update(){
-        if(keyH.upPressed== true || keyH.downPressed == true || keyH.leftPressed ==true || keyH.rightPressed){
+
+        if(keyH.upPressed== true || keyH.downPressed == true || keyH.leftPressed ==true || keyH.rightPressed || keyH.spacePressed){
             if (keyH.upPressed == true) {
                 direction = "up";
 
@@ -63,12 +78,14 @@ public class Player extends Entity {
 
 
             }
-            if(keyH.spacePressed==true && direction=="left"){
-                direction= "fightleft";
+            if(keyH.spacePressed==true ){
+
+                    if(vely==0)
+                        vely = -JumpVelocity;
+
+
             }
-            if(keyH.spacePressed==true && direction== "right"){
-                direction= "fightright";
-            }
+
 
 
 
@@ -88,6 +105,7 @@ public class Player extends Entity {
 
    }
    public void draw(Graphics2D g2){
+
        BufferedImage image = null;
        switch (direction){
            case "up":
@@ -114,20 +132,26 @@ public class Player extends Entity {
                }
 
                break;
-           case "fightright":
-               image= fightrigt;
-              break;
+//           case "jump":
+//               image = forward;
+//
+//
+//
+//               break;
 
-           case "fightleft":
-
-                   image = fightleft;
-
-               break;
 
 
        }
-       g2.drawImage(image,x,y, gp.titleSize,gp.titleSize,null);
+       if(x > 758 ){
+           g2.drawImage(image,728,(int)y, gp.titleSize,gp.titleSize,null);
 
+       }
+       if(x <0  ){
+           g2.drawImage(image,0,(int)y, gp.titleSize,gp.titleSize,null);
+
+       }else  {
+           g2.drawImage(image, (int) x, (int) y, gp.titleSize, gp.titleSize, null);
+       }
    }
 
 }
