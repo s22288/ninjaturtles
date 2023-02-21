@@ -20,7 +20,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     // set playlers default position
     int playxerX = 100;
-    int playerY = 150;
+    int playerY = 100;
     int playerSpeed = 4;
     int FPS= 60;
     // dodawanie tła do gry
@@ -29,7 +29,8 @@ public class GamePanel extends JPanel implements Runnable {
     // dodawanie grawitacji
     public  LevelHandle level = new LevelHandle();
 
-    Player player = new Player(this,keyH);
+    Player player = new Player(this,keyH,60,60);
+
     public GamePanel() {
 
         this.setPreferredSize(new Dimension(ScreenWith, ScreenHeight));
@@ -56,12 +57,21 @@ public class GamePanel extends JPanel implements Runnable {
             // nie ruszać tych metod
             // update positions of object
            ;
-           player.tick();
+//        if(player.collisionOn==false) {
+            player.tick();
+            level.tick();
+//        }
+
+
             update();
 
             // draw updated information on the screen
             repaint();
-
+            System.out.println(player.x + " "  + player.y);
+            if (player.y < 10 && player.x > 722){
+                new EngGameGui();
+                System.out.println("koniec");
+            }
 
             try {
 
@@ -89,6 +99,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         tileManager.draw(g2);
        player.draw(g2);
+       level.Render(g);
 
         g2.dispose();
     }

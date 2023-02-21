@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class TileManager {
     GamePanel gp;
-    Tile [] tiles;
-    int mapTileNum[][];
+  public  Tile [] tiles;
+   public int mapTileNum[][];
 
 
 
@@ -27,6 +27,7 @@ public class TileManager {
             tiles[0].image = ImageIO.read(new FileInputStream("src/images/background/flooreStones.jpg"));
             tiles[1] = new Tile();
             tiles[1].image = ImageIO.read(new FileInputStream("src/images/background/walls.jpg"));
+            tiles[1].collision=true;
             tiles[2] = new Tile();
             tiles[2].image = ImageIO.read(new FileInputStream("src/images/background/next.jpg"));
             tiles[3] = new Tile();

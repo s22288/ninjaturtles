@@ -2,6 +2,9 @@ package entities;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.Item;
+import object.ObjectId;
+import object.Platform;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,60 +12,92 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-public class Player extends Entity  {
+public class Player extends Entity {
     GamePanel gp;
     KeyHandler keyH;
+    public boolean Falling = true;
 
-    public Player(GamePanel gp, KeyHandler keyH) {
+    public Player(GamePanel gp, KeyHandler keyH, int width, int height) {
+        this.width = width;
+        this.height = height;
         this.gp = gp;
         this.keyH = keyH;
+
+
+        solidArea = new Rectangle(8, 16, 32, 32);
+
         setDefaultValues();
         getPlayerImgage();
 
     }
-   public void setDefaultValues(){
-        x =0;
-        y = 30;
+
+    public void setDefaultValues() {
+        x = 50;
+        y = 200;
         speed = 4;
         direction = "down";
 
-   }
-   public void getPlayerImgage(){
-       try {
-           forward = ImageIO.read(new FileInputStream("src/images/forward.png"));
-           backward = ImageIO.read(new FileInputStream("src/images/back.png"));
-           lefts = ImageIO.read(new FileInputStream("src/images/sleft.png"));
-           leftm = ImageIO.read(new FileInputStream("src/images/movleft.png"));
-           rights = ImageIO.read(new FileInputStream("src/images/stayright.png"));
-           rightm = ImageIO.read(new FileInputStream("src/images/movright.png"));
-           fightrigt =ImageIO.read(new FileInputStream("src/images/fightright.png"));
-           fightleft =ImageIO.read(new FileInputStream("src/images/fightleft.png"));
+    }
 
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       }
-   }
-   // skakanie
-    public void tick(){
-        x += valx;
-        if (vely < gp.level.gravity){
-            vely+=0.1;
-        }
-        if(y+vely< 430){
-            y+=vely;
-        }else {
-            vely=0;
+    public void getPlayerImgage() {
+        try {
+            forward = ImageIO.read(new FileInputStream("src/images/forward.png"));
+            backward = ImageIO.read(new FileInputStream("src/images/back.png"));
+            lefts = ImageIO.read(new FileInputStream("src/images/sleft.png"));
+            leftm = ImageIO.read(new FileInputStream("src/images/movleft.png"));
+            rights = ImageIO.read(new FileInputStream("src/images/stayright.png"));
+            rightm = ImageIO.read(new FileInputStream("src/images/movright.png"));
+            fightrigt = ImageIO.read(new FileInputStream("src/images/fightright.png"));
+            fightleft = ImageIO.read(new FileInputStream("src/images/fightleft.png"));
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
-   public void update(){
 
-        if(keyH.upPressed== true || keyH.downPressed == true || keyH.leftPressed ==true || keyH.rightPressed || keyH.spacePressed){
+    // skakanie
+    public void tick() {
+        x += valx;
+        y += vely;
+        if (vely < gp.level.gravity && Falling) {
+            vely += 0.1;
+        } else if (!Falling && vely > 0) {
+            vely = 0;
+        }
+//        if(y+vely< 430){
+//            y+=vely;
+//        }else {
+//            vely=0;
+//        }
+        Collision();
+    }
+
+    public void Collision() {
+        Falling = true;
+        for (Item i : gp.level.items) {
+            if (i.ID == ObjectId.Platform) {
+                Platform p = (Platform) i;
+                if (new Rectangle((int) x, (int) y, width, height).intersects(p.x, p.y, p.width, p.height)) {
+                    Falling = false;
+                }
+            }
+        }
+    }
+
+    public void update() {
+
+        if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed || keyH.spacePressed) {
             if (keyH.upPressed == true) {
                 direction = "up";
+                if (vely == 0) {
+                    vely = -JumpVelocity;
+
+                }
+
 
             }
             if (keyH.downPressed == true) {
-                direction= "down";
+                direction = "down";
 
             }
             if (keyH.leftPressed == true) {
@@ -73,65 +108,64 @@ public class Player extends Entity  {
             }
 
             if (keyH.rightPressed == true) {
-                direction= "right";
+                direction = "right";
                 x += speed;
 
 
             }
-            if(keyH.spacePressed==true ){
-
-                    if(vely==0)
-                        vely = -JumpVelocity;
-
-
-            }
-
-
+//            if(keyH.spacePressed==true ){
+//
+//                if(vely==0) {
+//                    vely = -JumpVelocity;
+//
+//                }
+//            }
 
 
             spriteCounter++;
-            if(spriteCounter>12){
+            if (spriteCounter > 12) {
 
-                if(spriteNum==1){
-                    spriteNum=2;
-                }else if(spriteNum==2){
+                if (spriteNum == 1) {
+                    spriteNum = 2;
+                } else if (spriteNum == 2) {
                     spriteNum = 1;
                 }
 
-                spriteCounter=0;
+                spriteCounter = 0;
             }
         }
 
 
-   }
-   public void draw(Graphics2D g2){
+    }
 
-       BufferedImage image = null;
-       switch (direction){
-           case "up":
-               image = backward;
-               break;
-           case "down":
-               image = forward;
-               break;
-           case "left":
-               if(spriteNum==1){
-                   image = lefts;
-               }
-               if(spriteNum==2){
-                   image = leftm;
-               }
+    public void draw(Graphics2D g2) {
 
-               break;
-           case "right":
-               if(spriteNum==1){
-                   image = rights;
-               }
-               if(spriteNum==2){
-                   image = rightm;
-               }
+        BufferedImage image = null;
+        switch (direction) {
+            case "up":
+                image = backward;
+                break;
+            case "down":
+                image = forward;
+                break;
+            case "left":
+                if (spriteNum == 1) {
+                    image = lefts;
+                }
+                if (spriteNum == 2) {
+                    image = leftm;
+                }
 
-               break;
+                break;
+            case "right":
+                if (spriteNum == 1) {
+                    image = rights;
+                }
+                if (spriteNum == 2) {
+                    image = rightm;
+                }
+
+                break;
 //           case "jump":
 //               image = forward;
 //
@@ -140,18 +174,16 @@ public class Player extends Entity  {
 //               break;
 
 
+        }
+        if (x < 50) {
+            g2.drawImage(image, 50, (int) y, gp.titleSize, gp.titleSize, null);
 
-       }
-       if(x > 758 ){
-           g2.drawImage(image,728,(int)y, gp.titleSize,gp.titleSize,null);
+        } else if (x > 700) {
+            g2.drawImage(image, 700, (int) y, gp.titleSize, gp.titleSize, null);
 
-       }
-       if(x <0  ){
-           g2.drawImage(image,0,(int)y, gp.titleSize,gp.titleSize,null);
-
-       }else  {
-           g2.drawImage(image, (int) x, (int) y, gp.titleSize, gp.titleSize, null);
-       }
-   }
+        } else {
+            g2.drawImage(image, (int) x, (int) y, gp.titleSize, gp.titleSize, null);
+        }
+    }
 
 }
