@@ -9,6 +9,8 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
     //    screen settings
+
+    SelectCharacterPanel selectCharacterPanel  = new SelectCharacterPanel();
     final int originalTitleSize = 16;
     final int scale = 3;
    public final int titleSize = originalTitleSize * scale;
@@ -29,10 +31,11 @@ public class GamePanel extends JPanel implements Runnable {
     // dodawanie grawitacji
     public  LevelHandle level = new LevelHandle();
 
-    Player player = new Player(this,keyH,60,60);
+    Player player = new Player(this,keyH,60,60,"ORANGE");
 
     public GamePanel() {
-
+//        selectCharacterPanel.choose();
+        ;
         this.setPreferredSize(new Dimension(ScreenWith, ScreenHeight));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
@@ -43,14 +46,19 @@ public class GamePanel extends JPanel implements Runnable {
 
 
     public void startGameThread() {
+
+
+
         gameThread = new Thread(this);
         gameThread.start();
     }
 
     @Override
     public void run() {
+        selectCharacterPanel.choose();
         double drawInterval = 1000000000/FPS;
         double nextDrawTime = System.nanoTime() + drawInterval;
+
         while (gameThread != null) {
 
 

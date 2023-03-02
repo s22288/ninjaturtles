@@ -6,6 +6,8 @@ import java.awt.*;
 
 public class main {
     public static void main(String[] args) {
+//        SelectCharacterPanel selectCharacterPanel = new SelectCharacterPanel();
+//        selectCharacterPanel.choose();
         JLabel koniec = new JLabel("koniec poziomu");
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,6 +16,7 @@ public class main {
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel);
 //        window.add(koniec);
+
         window.pack();
 
         window.setLocationRelativeTo(null);

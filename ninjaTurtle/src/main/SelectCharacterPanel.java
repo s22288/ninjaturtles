@@ -3,11 +3,17 @@ package main;
 import javax.swing.*;
 
 public class SelectCharacterPanel {
-    public static void main(String[] args) {
+
+
+    public  void choose() {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       SeclectHeroPanel seclectHeroPanel = new SeclectHeroPanel();
         window.setResizable(false);
-        window.setTitle("Ninja Turtle");
+        window.setTitle("SelectHero");
+        window.add(seclectHeroPanel);
+
+
 
         window.pack();
 
